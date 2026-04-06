@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>러닝크루 운영 대시보드</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: #f5f5f7;
+    min-height: 100vh;
+    color: #111827;
+  }
+
+  .topbar {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+
+  .topbar-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .topbar-title { font-size: 16px; font-weight: 600; }
+  .topbar-sub { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: blink 1.4s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  .topbar-right { font-size: 12px; opacity: 0.7; text-align: right; }
+
+  .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .stat {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 12px;
+    border: 1px solid #f3f4f6;
+  }
+
+  .stat-label { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+  .stat-val { font-size: 26px; font-weight: 700; color: #111827; }
+  .stat-val.blue { color: #2563eb; }
+  .stat-val.green { color: #16a34a; }
+
+  .section {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f3f4f6;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .section-header {
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .section-title { font-size: 13px; font-weight: 600; color: #374151; }
+
+  .qr-btn {
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    cursor: pointer;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  .export-btn {
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: none;
+    background: #1a1a2e;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .qr-display {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .qr-display svg { width: 100px; height: 100px; flex-shrink: 0; }
+
+  .qr-info { flex: 1; }
+  .qr-info .qr-date { font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+  .qr-info .qr-token { font-size: 11px; color: #6b7280; font-family: monospace; margin-bottom: 10px; }
+
+  .qr-link-box {
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #374151;
+    word-break: break-all;
+    font-family: monospace;
+  }
+
+  .copy-btn {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    cursor: pointer;
+    color: #374151;
+    width: 100%;
+  }
+
+  .member-row {
+    display: flex;
+    align-items: center;
+    padding: 11px 16px;
+    border-bottom: 1px solid #f9fafb;
+    gap: 10px;
+  }
+
+  .member-row:last-child { border-bottom: none; }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1e40af;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .avatar.absent { background: #f3f4f6; color: #9ca3af; }
+
+  .member-name { font-size: 14px; color: #111827; flex: 1; }
+  .member-time { font-size: 12px; color: #6b7280; }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .badge-ok { background: #dcfce7; color: #15803d; }
+  .badge-no { background: #f3f4f6; color: #6b7280; }
+
+  .total-count {
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #9ca3af;
+    background: #f9fafb;
+    border-top: 1px solid #f3f4f6;
+    text-align: center;
+  }
+
+  .history-row {
+    display: flex;
+    align-items: center;
+    padding: 11px 16px;
+    border-bottom: 1px solid #f9fafb;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .history-row:last-child { border-bottom: none; }
+
+  .history-num {
+    font-size: 11px;
+    width: 20px;
+    color: #9ca3af;
+    text-align: center;
+  }
+
+  .bar-wrap { flex: 1; background: #f3f4f6; border-radius: 4px; height: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; background: #1a1a2e; border-radius: 4px; transition: width 0.4s; }
+
+  .history-count { font-size: 12px; color: #6b7280; min-width: 32px; text-align: right; }
+
+  .refresh-row {
+    text-align: center;
+    padding: 12px;
+  }
+
+  .refresh-btn {
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    cursor: pointer;
+    color: #374151;
+  }
+
+  .loading { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
+
+  .tab-row {
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px 0;
+  }
+
+  .tab {
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #6b7280;
+    cursor: pointer;
+  }
+
+  .tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+        <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
+        <path d="M7 20l3-8 2 3 3-5 3 10"/>
+      </svg>
+    </div>
+    <div>
+      <div class="topbar-title">목요 러닝크루</div>
+      <div class="topbar-sub">운영자 대시보드</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div><span class="live-dot"></span>실시간</div>
+    <div id="last-updated">-</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat"><div class="stat-label">전체 멤버</div><div class="stat-val" id="s-total">-</div></div>
+    <div class="stat"><div class="stat-label">오늘 출석</div><div class="stat-val blue" id="s-checked">-</div></div>
+    <div class="stat"><div class="stat-label">출석률</div><div class="stat-val green" id="s-rate">-</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">이번 주 QR코드</div>
+      <button class="export-btn" onclick="exportCSV()">CSV 내보내기</button>
+    </div>
+    <div class="qr-display">
+      <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="44" height="44" rx="6" fill="none" stroke="#1a1a2e" stroke-width="4"/>
+        <rect x="18" y="18" width="24" height="24" rx="3" fill="#1a1a2e"/>
+        <rect x="88" y="8" width="44" height="44" rx="6" fill="none" stroke="#1a1a2e" stroke-width="4"/>
+        <rect x="98" y="18" width="24" height="24" rx="3" fill="#1a1a2e"/>
+        <rect x="8" y="88" width="44" height="44" rx="6" fill="none" stroke="#1a1a2e" stroke-width="4"/>
+        <rect x="18" y="98" width="24" height="24" rx="3" fill="#1a1a2e"/>
+        <rect x="62" y="8" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="76" y="8" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="62" y="22" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="76" y="22" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="62" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="76" y="62" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="90" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="104" y="62" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="118" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="8" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="36" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+      </svg>
+      <div class="qr-info">
+        <div class="qr-date" id="qr-date">날짜 로딩 중...</div>
+        <div class="qr-token" id="qr-token">토큰: -</div>
+        <div class="qr-link-box" id="qr-link">체크인 링크 로딩 중...</div>
+        <button class="copy-btn" onclick="copyLink()">링크 복사하기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title" id="list-title">오늘 출석 현황</div>
+      <div style="display:flex;gap:6px;">
+        <button class="tab active" onclick="switchTab('today', this)">오늘</button>
+        <button class="tab" onclick="switchTab('history', this)">누적</button>
+      </div>
+    </div>
+
+    <div id="list-today">
+      <div class="loading" id="loading-msg">데이터 불러오는 중...</div>
+      <div id="member-list"></div>
+    </div>
+
+    <div id="list-history" style="display:none;">
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <div class="refresh-row">
+    <button class="refresh-btn" onclick="loadData()">새로고침</button>
+  </div>
+
+</div>
+
+<script>
+  // ★ 여기에 Apps Script 배포 URL을 붙여넣으세요
+  const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz40tkaMmzYwAZIKxt6ZMVVQF2FtMhORzlexEZF0gdQh4XZW0nFfkFWgn88GrErJo2w-A/exec;
+
+  let allData = null;
+  let checkinUrl = "";
+
+  async function loadData() {
+    try {
+      const res = await fetch(`${SCRIPT_URL}?action=getRecords`);
+      allData = await res.json();
+
+      const now = new Date();
+      document.getElementById("last-updated").textContent =
+        now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + " 기준";
+
+      document.getElementById("qr-date").textContent = allData.date;
+      document.getElementById("qr-token").textContent = "토큰: " + allData.token;
+
+      const baseUrl = location.href.replace("dashboard.html", "checkin.html");
+      checkinUrl = baseUrl + "?token=" + allData.token;
+      document.getElementById("qr-link").textContent = checkinUrl;
+
+      const members = allData.members || [];
+      const records = allData.records || [];
+      const checkedNames = records.map(r => r.name);
+
+      document.getElementById("s-total").textContent = members.length;
+      document.getElementById("s-checked").textContent = checkedNames.length;
+      const rate = members.length > 0 ? Math.round(checkedNames.length / members.length * 100) : 0;
+      document.getElementById("s-rate").textContent = rate + "%";
+
+      document.getElementById("loading-msg").style.display = "none";
+
+      const listEl = document.getElementById("member-list");
+      listEl.innerHTML = "";
+
+      // 출석자 먼저, 미출석자 나중
+      const sorted = [
+        ...records.map(r => ({ name: r.name, time: r.time, checked: true })),
+        ...members.filter(m => !checkedNames.includes(m)).map(m => ({ name: m, time: null, checked: false }))
+      ];
+
+      sorted.forEach(item => {
+        const initials = item.name.slice(0, 2);
+        const div = document.createElement("div");
+        div.className = "member-row";
+        div.innerHTML = `
+          <div class="avatar ${item.checked ? '' : 'absent'}">${initials}</div>
+          <div class="member-name">${item.name}</div>
+          <div class="member-time">${item.time || "—"}</div>
+          <div class="badge ${item.checked ? 'badge-ok' : 'badge-no'}">${item.checked ? '출석' : '미출석'}</div>
+        `;
+        listEl.appendChild(div);
+      });
+
+      // 누적 히스토리
+      const histEl = document.getElementById("history-list");
+      histEl.innerHTML = "";
+      const history = allData.history || {};
+      const histSorted = Object.entries(history).sort((a, b) => b[1] - a[1]);
+      const maxCount = histSorted[0]?.[1] || 1;
+
+      histSorted.forEach(([name, count], i) => {
+        const div = document.createElement("div");
+        div.className = "history-row";
+        const pct = Math.round(count / maxCount * 100);
+        div.innerHTML = `
+          <div class="history-num">${i + 1}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;margin-bottom:4px;color:#111827;">${name}</div>
+            <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div class="history-count">${count}회</div>
+        `;
+        histEl.appendChild(div);
+      });
+
+    } catch(e) {
+      document.getElementById("loading-msg").textContent = "데이터를 불러오지 못했습니다. SCRIPT_URL을 확인해주세요.";
+    }
+  }
+
+  function switchTab(tab, el) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    el.classList.add("active");
+    document.getElementById("list-today").style.display = tab === "today" ? "block" : "none";
+    document.getElementById("list-history").style.display = tab === "history" ? "block" : "none";
+    document.getElementById("list-title").textContent = tab === "today" ? "오늘 출석 현황" : "누적 출석 순위";
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(checkinUrl).then(() => {
+      const btn = event.target;
+      btn.textContent = "복사 완료!";
+      setTimeout(() => btn.textContent = "링크 복사하기", 2000);
+    });
+  }
+
+  function exportCSV() {
+    if (!allData) return;
+    const rows = [["날짜", "이름", "체크인시간"]];
+    (allData.records || []).forEach(r => rows.push([r.date, r.name, r.time]));
+    const csv = rows.map(r => r.join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `출석기록_${allData.token}.csv`;
+    a.click();
+  }
+
+  // 30초마다 자동 갱신
+  loadData();
+  setInterval(loadData, 30000);
+</script>
+</body>
+</html>

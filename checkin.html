@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>러닝크루 출석체크</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: #f5f5f7;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 360px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: #1a1a2e;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-icon svg { width: 18px; height: 18px; }
+
+  .logo-text { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+  .logo-sub { font-size: 12px; color: #6b7280; }
+
+  .date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0fdf4;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .dot-live {
+    width: 7px; height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: blink 1.4s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  .qr-area {
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .qr-area svg { width: 140px; height: 140px; }
+
+  .qr-hint {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .divider hr { flex: 1; border: none; border-top: 1px solid #f3f4f6; }
+  .divider span { font-size: 12px; color: #9ca3af; white-space: nowrap; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input[type="text"]:focus { border-color: #1a1a2e; }
+  input[type="text"]::placeholder { color: #d1d5db; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .btn:active { opacity: 0.85; transform: scale(0.98); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .msg {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .msg.success { background: #f0fdf4; color: #15803d; display: block; }
+  .msg.error { background: #fef2f2; color: #b91c1c; display: block; }
+
+  .success-screen {
+    text-align: center;
+    display: none;
+    padding: 10px 0;
+  }
+
+  .success-screen .check-circle {
+    width: 64px; height: 64px;
+    background: #dcfce7;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 28px;
+  }
+
+  .success-screen h2 { font-size: 20px; color: #111827; margin-bottom: 6px; }
+  .success-screen p { font-size: 14px; color: #6b7280; }
+
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff7ed;
+    color: #c2410c;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-top: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo-row">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+        <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
+        <path d="M7 20l3-8 2 3 3-5 3 10"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">목요 러닝크루</div>
+      <div class="logo-sub">매주 목요일 저녁</div>
+    </div>
+  </div>
+
+  <div id="main-form">
+    <div class="date-badge">
+      <div class="dot-live"></div>
+      <span id="today-date">날짜 로딩 중...</span>
+    </div>
+
+    <div class="qr-area">
+      <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="44" height="44" rx="6" fill="none" stroke="#1a1a2e" stroke-width="4"/>
+        <rect x="18" y="18" width="24" height="24" rx="3" fill="#1a1a2e"/>
+        <rect x="88" y="8" width="44" height="44" rx="6" fill="none" stroke="#1a1a2e" stroke-width="4"/>
+        <rect x="98" y="18" width="24" height="24" rx="3" fill="#1a1a2e"/>
+        <rect x="8" y="88" width="44" height="44" rx="6" fill="none" stroke="#1a1a2e" stroke-width="4"/>
+        <rect x="18" y="98" width="24" height="24" rx="3" fill="#1a1a2e"/>
+        <rect x="62" y="8" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="76" y="8" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="62" y="22" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="76" y="22" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="62" y="36" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="76" y="36" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="62" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="76" y="62" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="90" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="104" y="62" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="118" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="8" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="22" y="62" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="36" y="62" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="50" y="62" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="62" y="76" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="76" y="76" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="90" y="76" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="104" y="76" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="8" y="76" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="22" y="76" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="36" y="76" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="50" y="76" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="62" y="90" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="90" y="90" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="104" y="90" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="118" y="90" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="62" y="104" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="76" y="104" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="90" y="104" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="104" y="104" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="118" y="104" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="62" y="118" width="10" height="10" rx="2" fill="#1a1a2e"/>
+        <rect x="90" y="118" width="10" height="10" rx="2" fill="#1a1a2e" opacity=".3"/>
+        <rect x="104" y="118" width="10" height="10" rx="2" fill="#1a1a2e"/>
+      </svg>
+      <div class="qr-hint">이 QR코드를 크루원에게 보여주세요<br>(실제 사용 시 화면 상단 QR이 자동 생성됩니다)</div>
+    </div>
+
+    <div class="divider">
+      <hr><span>이름으로 출석 체크</span><hr>
+    </div>
+
+    <label for="name-input">이름</label>
+    <input type="text" id="name-input" placeholder="홍길동" autocomplete="off" autocorrect="off">
+
+    <button class="btn" id="checkin-btn" onclick="doCheckin()">출석 완료</button>
+
+    <div class="msg" id="msg-box"></div>
+  </div>
+
+  <div class="success-screen" id="success-screen">
+    <div class="check-circle">✓</div>
+    <h2 id="success-name">출석 완료!</h2>
+    <p id="success-msg">오늘도 달려봐요 🏃</p>
+    <div class="streak-badge" id="streak-info" style="display:none;">
+      🔥 <span id="streak-count"></span>주 연속 출석 중
+    </div>
+  </div>
+</div>
+
+<script>
+  // ★ 여기에 Apps Script 배포 URL을 붙여넣으세요
+  const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz40tkaMmzYwAZIKxt6ZMVVQF2FtMhORzlexEZF0gdQh4XZW0nFfkFWgn88GrErJo2w-A/exec;
+
+  const params = new URLSearchParams(location.search);
+  const TOKEN = params.get("token") || "";
+
+  async function init() {
+    try {
+      const res = await fetch(`${SCRIPT_URL}?action=getWeeklyQR`);
+      const data = await res.json();
+      document.getElementById("today-date").textContent = data.date;
+    } catch(e) {
+      document.getElementById("today-date").textContent = new Date().toLocaleDateString("ko-KR", {
+        year: "numeric", month: "long", day: "numeric", weekday: "long"
+      });
+    }
+  }
+
+  async function doCheckin() {
+    const name = document.getElementById("name-input").value.trim();
+    const btn = document.getElementById("checkin-btn");
+    const msgBox = document.getElementById("msg-box");
+
+    if (!name) {
+      showMsg("이름을 입력해주세요.", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "처리 중...";
+    msgBox.className = "msg";
+
+    try {
+      const url = `${SCRIPT_URL}?action=checkin&token=${TOKEN}&name=${encodeURIComponent(name)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById("main-form").style.display = "none";
+        const sc = document.getElementById("success-screen");
+        sc.style.display = "block";
+        document.getElementById("success-name").textContent = `${name}님, 출석 완료!`;
+      } else {
+        showMsg(data.message, "error");
+        btn.disabled = false;
+        btn.textContent = "출석 완료";
+      }
+    } catch(e) {
+      showMsg("네트워크 오류가 발생했습니다. 다시 시도해주세요.", "error");
+      btn.disabled = false;
+      btn.textContent = "출석 완료";
+    }
+  }
+
+  function showMsg(text, type) {
+    const box = document.getElementById("msg-box");
+    box.textContent = text;
+    box.className = `msg ${type}`;
+  }
+
+  document.getElementById("name-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") doCheckin();
+  });
+
+  init();
+</script>
+</body>
+</html>
