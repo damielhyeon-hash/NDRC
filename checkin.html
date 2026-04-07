@@ -119,8 +119,6 @@
     text-align: center;
   }
 
-  .pace-btn:active { transform: scale(0.96); }
-
   .pace-btn.selected {
     background: #c8e435;
     border-color: #c8e435;
@@ -173,6 +171,7 @@
 
   .success-screen h2 { font-size: 22px; color: #111827; margin-bottom: 8px; }
   .success-screen p { font-size: 14px; color: #6b7280; line-height: 1.6; }
+
   .success-pace {
     display: inline-block;
     margin-top: 12px;
@@ -207,91 +206,89 @@
     </div>
 
     <button class="btn" id="checkin-btn" onclick="doCheckin()">출석 완료</button>
-
     <div class="msg" id="msg-box"></div>
   </div>
 
   <div class="success-screen" id="success-screen">
-    <div class="check-circle">✓</div>
+    <div class="check-circle">&#10003;</div>
     <h2 id="success-name">출석 완료!</h2>
-    <p>오늘도 함께 달려요 🏃</p>
+    <p>오늘도 함께 달려요!</p>
     <div class="success-pace" id="success-pace"></div>
   </div>
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec
-"
-  const params = new URLSearchParams(location.search);
-  const TOKEN = params.get("token") || "";
-  let selectedPace = "";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
+var params = new URLSearchParams(location.search);
+var TOKEN = params.get("token") || "";
+var selectedPace = "";
 
-  function init() {
-    document.getElementById("today-date").textContent = new Date().toLocaleDateString("ko-KR", {
-      year: "numeric", month: "long", day: "numeric", weekday: "long"
-    });
+function init() {
+  document.getElementById("today-date").textContent = new Date().toLocaleDateString("ko-KR", {
+    year: "numeric", month: "long", day: "numeric", weekday: "long"
+  });
 
-    const paces = ["4:30/km","5:00/km","5:30/km","6:00/km","6:30/km","7:00/km"];
+  var paces = ["4:30/km", "5:00/km", "5:30/km", "6:00/km", "6:30/km", "7:00/km"];
+  var grid = document.getElementById("pace-grid");
 
-    const grid = document.getElementById("pace-grid");
-    paces.forEach(pace => {
-      const btn = document.createElement("button");
-      btn.className = "pace-btn";
-      btn.textContent = pace;
-      btn.onclick = () => {
-        document.querySelectorAll(".pace-btn").forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        selectedPace = pace;
-      };
-      grid.appendChild(btn);
-    });
+  paces.forEach(function(pace) {
+    var btn = document.createElement("button");
+    btn.className = "pace-btn";
+    btn.textContent = pace;
+    btn.onclick = function() {
+      var btns = document.querySelectorAll(".pace-btn");
+      btns.forEach(function(b) { b.classList.remove("selected"); });
+      btn.classList.add("selected");
+      selectedPace = pace;
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function doCheckin() {
+  var name = document.getElementById("name-input").value.trim();
+  var btn = document.getElementById("checkin-btn");
+
+  if (!name) {
+    showMsg("이름을 입력해주세요.", "error");
+    return;
   }
 
-  async function doCheckin() {
-    const name = document.getElementById("name-input").value.trim();
-    const btn = document.getElementById("checkin-btn");
+  if (!selectedPace) {
+    showMsg("페이스를 선택해주세요.", "error");
+    return;
+  }
 
-    if (!name) {
-      showMsg("이름을 입력해주세요.", "error");
-      return;
-    }
+  btn.disabled = true;
+  btn.textContent = "처리 중...";
 
-    if (!selectedPace) {
-      showMsg("페이스를 선택해주세요.", "error");
-      return;
-    }
+  var url = SCRIPT_URL + "?action=checkin&token=" + TOKEN + "&name=" + encodeURIComponent(name) + "&pace=" + encodeURIComponent(selectedPace);
 
-    btn.disabled = true;
-    btn.textContent = "처리 중...";
-
-    try {
-      const url = `${SCRIPT_URL}?action=checkin&token=${TOKEN}&name=${encodeURIComponent(name)}&pace=${encodeURIComponent(selectedPace)}`;
-      await fetch(url, { method: "GET", mode: "no-cors" });
-
+  fetch(url, { method: "GET", mode: "no-cors" })
+    .then(function() {
       document.getElementById("main-form").style.display = "none";
-      const sc = document.getElementById("success-screen");
-      sc.style.display = "block";
-      document.getElementById("success-name").textContent = `${name}님, 출석 완료!`;
-      document.getElementById("success-pace").textContent = `목표 페이스 ${selectedPace}`;
-
-    } catch(e) {
+      document.getElementById("success-screen").style.display = "block";
+      document.getElementById("success-name").textContent = name + "님, 출석 완료!";
+      document.getElementById("success-pace").textContent = "목표 페이스 " + selectedPace;
+    })
+    .catch(function() {
       showMsg("네트워크 오류가 발생했습니다. 다시 시도해주세요.", "error");
       btn.disabled = false;
       btn.textContent = "출석 완료";
-    }
-  }
+    });
+}
 
-  function showMsg(text, type) {
-    const box = document.getElementById("msg-box");
-    box.textContent = text;
-    box.className = `msg ${type}`;
-  }
+function showMsg(text, type) {
+  var box = document.getElementById("msg-box");
+  box.textContent = text;
+  box.className = "msg " + type;
+}
 
-  document.getElementById("name-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") doCheckin();
-  });
+document.getElementById("name-input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") doCheckin();
+});
 
-  init();
+init();
 </script>
 </body>
 </html>
