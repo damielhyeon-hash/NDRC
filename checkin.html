@@ -353,16 +353,15 @@ function launchConfetti() {
   setTimeout(function() { bursts.push.apply(bursts, createBurst(cx * 0.6, cy * 0.5, 25)); }, 650);
   setTimeout(function() { bursts.push.apply(bursts, createBurst(cx * 1.4, cy * 0.5, 25)); }, 800);
 
-  var running = true;
+  var startTime = Date.now();
+  var duration = 2500;
 
   function animate() {
-    if (!running) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var elapsed = Date.now() - startTime;
 
-    var alive = false;
     bursts.forEach(function(p) {
       if (p.opacity <= 0) return;
-      alive = true;
 
       p.tail.unshift({ x: p.x, y: p.y });
       if (p.tail.length > 6) p.tail.pop();
@@ -371,7 +370,7 @@ function launchConfetti() {
       p.y += p.vy;
       p.vy += 0.15;
       p.vx *= 0.98;
-      p.opacity -= 0.018;
+      p.opacity -= 0.016;
 
       p.tail.forEach(function(t, i) {
         ctx.beginPath();
@@ -390,10 +389,9 @@ function launchConfetti() {
 
     ctx.globalAlpha = 1;
 
-    if (alive) {
+    if (elapsed < duration) {
       requestAnimationFrame(animate);
     } else {
-      running = false;
       canvas.style.display = "none";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
