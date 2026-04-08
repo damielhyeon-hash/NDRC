@@ -16,6 +16,17 @@
     align-items: center;
   }
 
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+  }
+
+  .screen.active { display: flex; }
+
   .hero {
     width: 100%;
     background: #c8e435;
@@ -32,8 +43,6 @@
     border-radius: 28px 28px 0 0;
     padding: 32px 24px 48px;
     width: 100%;
-    max-width: 480px;
-    margin-top: -24px;
     flex: 1;
   }
 
@@ -66,23 +75,12 @@
 
   .menu-icon.green { background: #c8e435; }
   .menu-icon.dark { background: #1a1a2e; }
-
   .menu-text { flex: 1; }
   .menu-title { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 2px; }
   .menu-sub { font-size: 12px; color: #9ca3af; }
   .menu-arrow { color: #d1d5db; font-size: 18px; }
 
-  /* QR 스캔 화면 */
-  .scan-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 480px;
-    min-height: 100vh;
-    background: #fff;
-  }
-
+  /* 스캔 화면 */
   .scan-header {
     width: 100%;
     display: flex;
@@ -99,24 +97,33 @@
     border-radius: 8px;
     border: none;
     color: #fff;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
 
   .scan-title { font-size: 16px; font-weight: 600; }
 
-  .scan-area {
+  .scan-body {
+    flex: 1;
     width: 100%;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background: #000;
   }
 
   #qr-video {
     width: 100%;
-    display: block;
-    max-height: 60vh;
+    max-height: 65vh;
     object-fit: cover;
+    display: block;
+  }
+
+  .scan-frame-wrap {
+    position: relative;
+    width: 100%;
   }
 
   .scan-overlay {
@@ -125,46 +132,40 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none;
   }
 
   .scan-frame {
-    width: 200px; height: 200px;
+    width: 220px; height: 220px;
     border: 3px solid #c8e435;
     border-radius: 16px;
-    box-shadow: 0 0 0 1000px rgba(0,0,0,0.4);
+    box-shadow: 0 0 0 1000px rgba(0,0,0,0.45);
   }
 
-  .scan-hint {
+  .scan-bottom {
+    width: 100%;
+    background: #111827;
     padding: 20px;
-    text-align: center;
-    font-size: 14px;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-
-  .scan-status {
-    padding: 12px 20px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #15803d;
-    background: #f0fdf4;
-    border-radius: 10px;
-    margin: 0 20px;
-    display: none;
-  }
-
-  /* 체크인 입력 화면 */
-  .checkin-screen {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 480px;
-    min-height: 100vh;
-    background: #f5f5f7;
+    gap: 12px;
+    flex: 1;
   }
 
+  .scan-hint { font-size: 13px; color: #9ca3af; text-align: center; line-height: 1.6; }
+
+  .scan-status {
+    font-size: 14px;
+    font-weight: 500;
+    color: #c8e435;
+    text-align: center;
+    min-height: 20px;
+  }
+
+  canvas#qr-canvas { display: none; }
+
+  /* 체크인 화면 */
   .checkin-header {
     width: 100%;
     display: flex;
@@ -173,7 +174,6 @@
     background: #1a1a2e;
     color: #fff;
     gap: 12px;
-    margin-bottom: 0;
   }
 
   .checkin-body {
@@ -199,19 +199,9 @@
     margin-bottom: 24px;
   }
 
-  .dot-green {
-    width: 7px; height: 7px;
-    background: #22c55e;
-    border-radius: 50%;
-  }
+  .dot-green { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; }
 
-  .input-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 10px;
-  }
+  .input-label { display: block; font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 10px; }
 
   input[type="text"] {
     width: 100%;
@@ -221,9 +211,9 @@
     font-size: 16px;
     color: #111827;
     outline: none;
-    transition: border-color 0.15s;
     -webkit-appearance: none;
     text-align: center;
+    transition: border-color 0.15s;
   }
 
   input[type="text"]:focus { border-color: #c8e435; }
@@ -231,13 +221,7 @@
 
   .section-gap { margin-top: 24px; }
 
-  .pace-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 12px;
-  }
+  .pace-label { display: block; font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px; }
 
   .pace-grid {
     display: grid;
@@ -279,27 +263,18 @@
 
   .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .msg {
-    margin-top: 14px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 14px;
-    text-align: center;
-    display: none;
-  }
-
+  .msg { margin-top: 14px; padding: 12px 16px; border-radius: 12px; font-size: 14px; text-align: center; display: none; }
   .msg.error { background: #fef2f2; color: #b91c1c; display: block; }
 
   /* 성공 화면 */
-  .success-screen {
-    display: none;
+  .success-body {
+    flex: 1;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    max-width: 480px;
-    min-height: 100vh;
     background: #fff;
+    width: 100%;
     text-align: center;
     padding: 40px 24px;
   }
@@ -313,8 +288,8 @@
     font-size: 36px;
   }
 
-  .success-screen h2 { font-size: 24px; color: #111827; margin-bottom: 8px; }
-  .success-screen p { font-size: 14px; color: #6b7280; }
+  .success-body h2 { font-size: 24px; color: #111827; margin-bottom: 8px; }
+  .success-body p { font-size: 14px; color: #6b7280; }
 
   .success-pace {
     display: inline-block;
@@ -343,7 +318,7 @@
 <body>
 
 <!-- 홈 화면 -->
-<div id="home-screen" style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:480px; min-height:100vh;">
+<div class="screen active" id="home-screen">
   <div class="hero" style="width:100%;">
     <img src="NDRC_Color_1.png" alt="NDRC 로고">
   </div>
@@ -351,7 +326,7 @@
     <div class="crew-name">노들러닝크루, NDRC</div>
     <div class="crew-since">Since 2022.06.02</div>
 
-    <div class="menu-btn" onclick="startScan()">
+    <div class="menu-btn" onclick="showScreen('scan-screen'); startCamera();">
       <div class="menu-icon green">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round">
           <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
@@ -382,26 +357,28 @@
 </div>
 
 <!-- QR 스캔 화면 -->
-<div class="scan-screen" id="scan-screen">
+<div class="screen" id="scan-screen">
   <div class="scan-header">
-    <button class="back-btn" onclick="goHome()">‹</button>
+    <button class="back-btn" onclick="stopCamera(); showScreen('home-screen');">‹</button>
     <div class="scan-title">QR코드 스캔</div>
   </div>
-  <div class="scan-area">
+  <div class="scan-frame-wrap">
     <video id="qr-video" playsinline autoplay muted></video>
     <div class="scan-overlay">
       <div class="scan-frame"></div>
     </div>
   </div>
-  <div class="scan-hint">운영진이 보여주는 QR코드를<br>화면 안에 맞춰주세요</div>
-  <div class="scan-status" id="scan-status">QR코드 인식 중...</div>
-  <canvas id="qr-canvas" style="display:none;"></canvas>
+  <div class="scan-bottom">
+    <div class="scan-hint">운영진이 보여주는 QR코드를<br>네모 안에 맞춰주세요</div>
+    <div class="scan-status" id="scan-status"></div>
+  </div>
+  <canvas id="qr-canvas"></canvas>
 </div>
 
 <!-- 체크인 입력 화면 -->
-<div class="checkin-screen" id="checkin-screen">
+<div class="screen" id="checkin-screen">
   <div class="checkin-header">
-    <button class="back-btn" onclick="goScan()">‹</button>
+    <button class="back-btn" onclick="showScreen('scan-screen'); startCamera();">‹</button>
     <div class="scan-title">출석체크</div>
   </div>
   <div class="checkin-body">
@@ -411,7 +388,7 @@
     </div>
 
     <label class="input-label">이름을 입력해주세요</label>
-    <input type="text" id="name-input" placeholder="홍길동" autocomplete="off" autocorrect="off">
+    <input type="text" id="name-input" placeholder="홍길동" autocomplete="off" autocorrect="off" autocapitalize="off">
 
     <div class="section-gap">
       <label class="pace-label">원하는 페이스를 선택해주세요</label>
@@ -424,17 +401,19 @@
 </div>
 
 <!-- 성공 화면 -->
-<div class="success-screen" id="success-screen">
-  <div class="check-circle">&#10003;</div>
-  <h2 id="success-name">출석 완료!</h2>
-  <p>오늘도 함께 달려요!</p>
-  <div class="success-pace" id="success-pace"></div>
-  <button class="home-btn" onclick="goHome()">홈으로</button>
+<div class="screen" id="success-screen">
+  <div class="success-body">
+    <div class="check-circle">&#10003;</div>
+    <h2 id="success-name">출석 완료!</h2>
+    <p>오늘도 함께 달려요!</p>
+    <div class="success-pace" id="success-pace"></div>
+    <button class="home-btn" onclick="goHome()">홈으로</button>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <script>
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQc5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
 var scannedToken = "";
 var selectedPace = "";
 var memberList = [];
@@ -463,86 +442,82 @@ paces.forEach(function(pace) {
 });
 
 function showScreen(id) {
-  ["home-screen","scan-screen","checkin-screen","success-screen"].forEach(function(s) {
-    document.getElementById(s).style.display = "none";
+  document.querySelectorAll(".screen").forEach(function(s) {
+    s.classList.remove("active");
   });
-  document.getElementById(id).style.display = "flex";
-}
-
-function goHome() {
-  stopScan();
-  selectedPace = "";
-  scannedToken = "";
-  document.querySelectorAll(".pace-btn").forEach(function(b) { b.classList.remove("selected"); });
-  document.getElementById("name-input").value = "";
-  document.getElementById("msg-box").className = "msg";
-  showScreen("home-screen");
-}
-
-function goScan() {
-  showScreen("scan-screen");
-  startCamera();
-}
-
-function startScan() {
-  showScreen("scan-screen");
-  startCamera();
+  document.getElementById(id).classList.add("active");
 }
 
 function startCamera() {
   if (videoStream) return;
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+  var constraints = {
+    video: {
+      facingMode: { ideal: "environment" },
+      width: { ideal: 1280 },
+      height: { ideal: 720 }
+    }
+  };
+
+  navigator.mediaDevices.getUserMedia(constraints)
     .then(function(stream) {
       videoStream = stream;
       var video = document.getElementById("qr-video");
       video.srcObject = stream;
+      video.setAttribute("playsinline", true);
       video.play();
-      scanInterval = setInterval(scanQR, 300);
+      video.onloadedmetadata = function() {
+        scanInterval = setInterval(scanQR, 200);
+      };
     })
-    .catch(function() {
-      document.getElementById("scan-status").textContent = "카메라 접근 권한이 필요합니다.";
-      document.getElementById("scan-status").style.display = "block";
+    .catch(function(err) {
+      document.getElementById("scan-status").textContent = "카메라 권한이 필요합니다.";
     });
 }
 
-function stopScan() {
+function stopCamera() {
   if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
   if (videoStream) {
     videoStream.getTracks().forEach(function(t) { t.stop(); });
     videoStream = null;
+    document.getElementById("qr-video").srcObject = null;
   }
 }
 
 function scanQR() {
   var video = document.getElementById("qr-video");
-  if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+  if (!video || video.readyState < 2 || video.videoWidth === 0) return;
 
   var canvas = document.getElementById("qr-canvas");
+  var ctx = canvas.getContext("2d");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  var ctx = canvas.getContext("2d");
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  var code = jsQR(imageData.data, imageData.width, imageData.height);
 
-  if (code && code.data) {
-    var qrData = code.data;
-    // RUN-YYYYMMDD 형식 토큰 인식
-    var tokenMatch = qrData.match(/RUN-\d{8}/);
-    if (tokenMatch) {
-      scannedToken = tokenMatch[0];
-      stopScan();
+  try {
+    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var code = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: "dontInvert"
+    });
 
-      // 날짜 표시
-      var year = scannedToken.substring(4, 8);
-      var month = scannedToken.substring(8, 10);
-      var day = scannedToken.substring(10, 12);
-      document.getElementById("verified-date").textContent = year + "년 " + month + "월 " + day + "일 QR 인증 완료";
+    if (code && code.data) {
+      var tokenMatch = code.data.match(/RUN-\d{8}/);
+      if (tokenMatch) {
+        scannedToken = tokenMatch[0];
+        stopCamera();
 
-      showScreen("checkin-screen");
-      setTimeout(function() { document.getElementById("name-input").focus(); }, 300);
+        var year = scannedToken.substring(4, 8);
+        var month = scannedToken.substring(8, 10);
+        var day = scannedToken.substring(10, 12);
+        document.getElementById("verified-date").textContent =
+          year + "년 " + month + "월 " + day + "일 QR 인증 완료";
+
+        showScreen("checkin-screen");
+        setTimeout(function() {
+          document.getElementById("name-input").focus();
+        }, 300);
+      }
     }
-  }
+  } catch(e) {}
 }
 
 function doCheckin() {
@@ -580,6 +555,18 @@ function showMsg(text, type) {
   var box = document.getElementById("msg-box");
   box.textContent = text;
   box.className = "msg " + type;
+}
+
+function goHome() {
+  stopCamera();
+  selectedPace = "";
+  scannedToken = "";
+  document.querySelectorAll(".pace-btn").forEach(function(b) { b.classList.remove("selected"); });
+  document.getElementById("name-input").value = "";
+  document.getElementById("msg-box").className = "msg";
+  document.getElementById("submit-btn").disabled = false;
+  document.getElementById("submit-btn").textContent = "출석 완료";
+  showScreen("home-screen");
 }
 
 document.getElementById("name-input").addEventListener("keydown", function(e) {
