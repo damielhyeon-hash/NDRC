@@ -297,7 +297,7 @@ function doCheckin() {
     .then(function() {
       document.getElementById("main-form").style.display = "none";
       document.getElementById("success-screen").style.display = "block";
-      document.getElementById("success-name").textContent = name + "님, 출석 완료!";
+      document.getElementById("success-name").textContent = name + "님, 환영합니다!";
       document.getElementById("success-pace").textContent = "목표 페이스 " + selectedPace;
       launchConfetti();
     })
