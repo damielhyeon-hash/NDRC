@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>러닝크루 운영 대시보드</title>
+<title>노들러닝크루 운영 대시보드</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -100,7 +100,7 @@
   }
 
   .qr-section {
-    padding: 20px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -115,10 +115,10 @@
   }
 
   .qr-box {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 20px;
+    background: #fff;
+    border: 2px solid #c8e435;
+    border-radius: 20px;
+    padding: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,33 +131,13 @@
     line-height: 1.6;
   }
 
-  .qr-link-row {
-    display: flex;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .qr-link-box {
-    flex: 1;
-    background: #f3f4f6;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 11px;
-    color: #374151;
-    word-break: break-all;
-    font-family: monospace;
-  }
-
-  .copy-btn {
+  .token-badge {
     font-size: 12px;
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    cursor: pointer;
+    font-family: monospace;
+    background: #f3f4f6;
     color: #374151;
-    white-space: nowrap;
-    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
   }
 
   .member-row {
@@ -186,15 +166,18 @@
   .member-name { font-size: 14px; color: #111827; flex: 1; }
   .member-time { font-size: 12px; color: #6b7280; }
 
-  .badge {
+  .badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .badge-ok { background: #dcfce7; color: #15803d; }
+  .badge-no { background: #f3f4f6; color: #6b7280; }
+
+  .pace-badge {
     font-size: 11px;
     padding: 3px 9px;
     border-radius: 20px;
-    font-weight: 500;
+    font-weight: 600;
+    background: #c8e435;
+    color: #1a1a2e;
   }
-
-  .badge-ok { background: #dcfce7; color: #15803d; }
-  .badge-no { background: #f3f4f6; color: #6b7280; }
 
   .history-row {
     display: flex;
@@ -202,55 +185,29 @@
     padding: 11px 16px;
     border-bottom: 1px solid #f9fafb;
     gap: 10px;
-    font-size: 13px;
   }
 
   .history-row:last-child { border-bottom: none; }
-
-  .history-num {
-    font-size: 11px;
-    width: 20px;
-    color: #9ca3af;
-    text-align: center;
-  }
-
+  .history-num { font-size: 11px; width: 20px; color: #9ca3af; text-align: center; }
   .bar-wrap { flex: 1; background: #f3f4f6; border-radius: 4px; height: 6px; overflow: hidden; }
-  .bar-fill { height: 100%; background: #1a1a2e; border-radius: 4px; transition: width 0.4s; }
-
+  .bar-fill { height: 100%; background: #1a1a2e; border-radius: 4px; }
   .history-count { font-size: 12px; color: #6b7280; min-width: 32px; text-align: right; }
 
-  .refresh-row {
-    text-align: center;
-    padding: 12px;
-  }
-
+  .refresh-row { text-align: center; padding: 12px; }
   .refresh-btn {
-    font-size: 13px;
-    padding: 8px 20px;
-    border-radius: 20px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    cursor: pointer;
-    color: #374151;
+    font-size: 13px; padding: 8px 20px;
+    border-radius: 20px; border: 1px solid #e5e7eb;
+    background: #fff; cursor: pointer; color: #374151;
   }
 
   .loading { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
 
-  .tab-row {
-    display: flex;
-    gap: 6px;
-  }
-
+  .tab-row { display: flex; gap: 6px; }
   .tab {
-    font-size: 12px;
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1px solid #e5e7eb;
-    background: #f9fafb;
-    color: #6b7280;
-    cursor: pointer;
+    font-size: 12px; padding: 5px 14px;
+    border-radius: 20px; border: 1px solid #e5e7eb;
+    background: #f9fafb; color: #6b7280; cursor: pointer;
   }
-
   .tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
 </style>
 </head>
@@ -293,11 +250,8 @@
       <div class="qr-box">
         <div id="qr-canvas"></div>
       </div>
-      <div class="qr-hint">참가자가 이 QR코드를 스캔하면<br>바로 출석 체크 페이지로 연결됩니다</div>
-      <div class="qr-link-row">
-        <div class="qr-link-box" id="qr-link">링크 로딩 중...</div>
-        <button class="copy-btn" onclick="copyLink()">복사</button>
-      </div>
+      <div class="qr-hint">참가자가 앱에서 출석체크 버튼을 누르고<br>이 QR코드를 스캔하면 출석이 완료됩니다</div>
+      <div class="token-badge" id="token-badge">-</div>
     </div>
   </div>
 
@@ -328,148 +282,136 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec"
-  
-  let allData = null;
-  let checkinUrl = "";
-  let qrGenerated = false;
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
+var allData = null;
+var qrGenerated = false;
 
-  function getWeekToken() {
-    const now = new Date();
-    const day = now.getDay();
-    const diff = (day >= 4) ? day - 4 : day + 3;
-    const thursday = new Date(now);
-    thursday.setDate(now.getDate() - diff);
-    const y = thursday.getFullYear();
-    const m = String(thursday.getMonth() + 1).padStart(2, "0");
-    const d = String(thursday.getDate()).padStart(2, "0");
-    return `RUN-${y}${m}${d}`;
-  }
+function getWeekToken() {
+  var now = new Date();
+  var day = now.getDay();
+  var diff = (day >= 4) ? day - 4 : day + 3;
+  var thursday = new Date(now);
+  thursday.setDate(now.getDate() - diff);
+  var y = thursday.getFullYear();
+  var m = String(thursday.getMonth() + 1).padStart(2, "0");
+  var d = String(thursday.getDate()).padStart(2, "0");
+  return "RUN-" + y + m + d;
+}
 
-  function generateQR() {
-    const token = getWeekToken();
-    const baseUrl = location.href.replace("dashboard.html", "checkin.html");
-    checkinUrl = `${baseUrl}?token=${token}`;
+function generateQR() {
+  var token = getWeekToken();
+  document.getElementById("token-badge").textContent = token;
 
-    document.getElementById("qr-link").textContent = checkinUrl;
-
-    if (!qrGenerated) {
-      new QRCode(document.getElementById("qr-canvas"), {
-        text: checkinUrl,
-        width: 180,
-        height: 180,
-        colorDark: "#1a1a2e",
-        colorLight: "#f9fafb",
-        correctLevel: QRCode.CorrectLevel.M
-      });
-      qrGenerated = true;
-    }
-  }
-
-  async function loadData() {
-    try {
-      const res = await fetch(`${SCRIPT_URL}?action=getRecords`, { method: "GET", mode: "no-cors" });
-    } catch(e) {}
-
-    try {
-      const res2 = await fetch(`${SCRIPT_URL}?action=getRecords`);
-      allData = await res2.json();
-
-      const now = new Date();
-      document.getElementById("last-updated").textContent =
-        now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + " 기준";
-
-      document.getElementById("qr-date").textContent = allData.date;
-
-      const members = allData.members || [];
-      const records = allData.records || [];
-      const checkedNames = records.map(r => r.name);
-
-      document.getElementById("s-total").textContent = members.length;
-      document.getElementById("s-checked").textContent = checkedNames.length;
-      const rate = members.length > 0 ? Math.round(checkedNames.length / members.length * 100) : 0;
-      document.getElementById("s-rate").textContent = rate + "%";
-
-      document.getElementById("loading-msg").style.display = "none";
-
-      const listEl = document.getElementById("member-list");
-      listEl.innerHTML = "";
-
-      const sorted = [
-        ...records.map(r => ({ name: r.name, time: r.time, checked: true })),
-        ...members.filter(m => !checkedNames.includes(m)).map(m => ({ name: m, time: null, checked: false }))
-      ];
-
-      sorted.forEach(item => {
-        const initials = item.name.slice(0, 2);
-        const div = document.createElement("div");
-        div.className = "member-row";
-        div.innerHTML = `
-          <div class="avatar ${item.checked ? '' : 'absent'}">${initials}</div>
-          <div class="member-name">${item.name}</div>
-          <div class="member-time">${item.time || "—"}</div>
-          <div class="badge ${item.checked ? 'badge-ok' : 'badge-no'}">${item.checked ? '출석' : '미출석'}</div>
-        `;
-        listEl.appendChild(div);
-      });
-
-      const histEl = document.getElementById("history-list");
-      histEl.innerHTML = "";
-      const history = allData.history || {};
-      const histSorted = Object.entries(history).sort((a, b) => b[1] - a[1]);
-      const maxCount = histSorted[0]?.[1] || 1;
-
-      histSorted.forEach(([name, count], i) => {
-        const div = document.createElement("div");
-        div.className = "history-row";
-        const pct = Math.round(count / maxCount * 100);
-        div.innerHTML = `
-          <div class="history-num">${i + 1}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;margin-bottom:4px;color:#111827;">${name}</div>
-            <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
-          </div>
-          <div class="history-count">${count}회</div>
-        `;
-        histEl.appendChild(div);
-      });
-
-    } catch(e) {
-      document.getElementById("loading-msg").textContent = "데이터를 불러오지 못했습니다.";
-    }
-  }
-
-  function switchTab(tab, el) {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    el.classList.add("active");
-    document.getElementById("list-today").style.display = tab === "today" ? "block" : "none";
-    document.getElementById("list-history").style.display = tab === "history" ? "block" : "none";
-    document.getElementById("list-title").textContent = tab === "today" ? "오늘 출석 현황" : "누적 출석 순위";
-  }
-
-  function copyLink() {
-    navigator.clipboard.writeText(checkinUrl).then(() => {
-      const btn = event.target;
-      btn.textContent = "완료!";
-      setTimeout(() => btn.textContent = "복사", 2000);
+  if (!qrGenerated) {
+    new QRCode(document.getElementById("qr-canvas"), {
+      text: token,
+      width: 200,
+      height: 200,
+      colorDark: "#1a1a2e",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
     });
+    qrGenerated = true;
   }
+}
 
-  function exportCSV() {
-    if (!allData) return;
-    const rows = [["날짜", "이름", "체크인시간"]];
-    (allData.records || []).forEach(r => rows.push([r.date, r.name, r.time]));
-    const csv = rows.map(r => r.join(",")).join("\n");
-    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `출석기록_${allData.token}.csv`;
-    a.click();
+async function loadData() {
+  try {
+    var res = await fetch(SCRIPT_URL + "?action=getRecords");
+    allData = await res.json();
+
+    var now = new Date();
+    document.getElementById("last-updated").textContent =
+      now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + " 기준";
+
+    document.getElementById("qr-date").textContent = allData.date;
+
+    var members = allData.members || [];
+    var records = allData.records || [];
+    var checkedNames = records.map(function(r) { return r.name; });
+
+    document.getElementById("s-total").textContent = members.length;
+    document.getElementById("s-checked").textContent = checkedNames.length;
+    var rate = members.length > 0 ? Math.round(checkedNames.length / members.length * 100) : 0;
+    document.getElementById("s-rate").textContent = rate + "%";
+
+    document.getElementById("loading-msg").style.display = "none";
+
+    var listEl = document.getElementById("member-list");
+    listEl.innerHTML = "";
+
+    var sorted = records.map(function(r) {
+      return { name: r.name, time: r.time, pace: r.pace, checked: true };
+    }).concat(members.filter(function(m) {
+      return !checkedNames.includes(m);
+    }).map(function(m) {
+      return { name: m, time: null, pace: null, checked: false };
+    }));
+
+    sorted.forEach(function(item) {
+      var initials = item.name.slice(0, 2);
+      var div = document.createElement("div");
+      div.className = "member-row";
+      div.innerHTML =
+        '<div class="avatar ' + (item.checked ? "" : "absent") + '">' + initials + '</div>' +
+        '<div class="member-name">' + item.name + '</div>' +
+        (item.pace ? '<div class="pace-badge">' + item.pace + '</div>' : '') +
+        '<div class="member-time">' + (item.time || "—") + '</div>' +
+        '<div class="badge ' + (item.checked ? "badge-ok" : "badge-no") + '">' + (item.checked ? "출석" : "미출석") + '</div>';
+      listEl.appendChild(div);
+    });
+
+    var histEl = document.getElementById("history-list");
+    histEl.innerHTML = "";
+    var history = allData.history || {};
+    var histSorted = Object.entries(history).sort(function(a, b) { return b[1] - a[1]; });
+    var maxCount = histSorted[0] ? histSorted[0][1] : 1;
+
+    histSorted.forEach(function(entry, i) {
+      var name = entry[0], count = entry[1];
+      var div = document.createElement("div");
+      div.className = "history-row";
+      var pct = Math.round(count / maxCount * 100);
+      div.innerHTML =
+        '<div class="history-num">' + (i + 1) + '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:13px;margin-bottom:4px;color:#111827;">' + name + '</div>' +
+          '<div class="bar-wrap"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+        '</div>' +
+        '<div class="history-count">' + count + '회</div>';
+      histEl.appendChild(div);
+    });
+
+  } catch(e) {
+    document.getElementById("loading-msg").textContent = "데이터를 불러오지 못했습니다.";
   }
+}
 
-  generateQR();
-  loadData();
-  setInterval(loadData, 30000);
+function switchTab(tab, el) {
+  document.querySelectorAll(".tab").forEach(function(t) { t.classList.remove("active"); });
+  el.classList.add("active");
+  document.getElementById("list-today").style.display = tab === "today" ? "block" : "none";
+  document.getElementById("list-history").style.display = tab === "history" ? "block" : "none";
+  document.getElementById("list-title").textContent = tab === "today" ? "오늘 출석 현황" : "누적 출석 순위";
+}
+
+function exportCSV() {
+  if (!allData) return;
+  var rows = [["날짜","이름","체크인시간","페이스"]];
+  (allData.records || []).forEach(function(r) {
+    rows.push([r.date, r.name, r.time, r.pace || ""]);
+  });
+  var csv = rows.map(function(r) { return r.join(","); }).join("\n");
+  var blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "출석기록_" + (allData.token || "") + ".csv";
+  a.click();
+}
+
+generateQR();
+loadData();
+setInterval(loadData, 30000);
 </script>
 </body>
 </html>

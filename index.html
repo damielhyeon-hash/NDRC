@@ -23,13 +23,9 @@
     align-items: center;
     justify-content: center;
     padding: 60px 24px 50px;
-    position: relative;
   }
 
-  .hero img {
-    width: 260px;
-    max-width: 70%;
-  }
+  .hero img { width: 260px; max-width: 70%; }
 
   .card {
     background: #fff;
@@ -41,20 +37,8 @@
     flex: 1;
   }
 
-  .crew-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: #111827;
-    text-align: center;
-    margin-bottom: 4px;
-  }
-
-  .crew-since {
-    font-size: 13px;
-    color: #9ca3af;
-    text-align: center;
-    margin-bottom: 32px;
-  }
+  .crew-name { font-size: 18px; font-weight: 700; color: #111827; text-align: center; margin-bottom: 4px; }
+  .crew-since { font-size: 13px; color: #9ca3af; text-align: center; margin-bottom: 32px; }
 
   .menu-btn {
     display: flex;
@@ -86,66 +70,521 @@
   .menu-text { flex: 1; }
   .menu-title { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 2px; }
   .menu-sub { font-size: 12px; color: #9ca3af; }
-
   .menu-arrow { color: #d1d5db; font-size: 18px; }
+
+  /* QR 스캔 화면 */
+  .scan-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  .scan-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background: #1a1a2e;
+    color: #fff;
+    gap: 12px;
+  }
+
+  .back-btn {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .scan-title { font-size: 16px; font-weight: 600; }
+
+  .scan-area {
+    width: 100%;
+    position: relative;
+    background: #000;
+  }
+
+  #qr-video {
+    width: 100%;
+    display: block;
+    max-height: 60vh;
+    object-fit: cover;
+  }
+
+  .scan-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scan-frame {
+    width: 200px; height: 200px;
+    border: 3px solid #c8e435;
+    border-radius: 16px;
+    box-shadow: 0 0 0 1000px rgba(0,0,0,0.4);
+  }
+
+  .scan-hint {
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  .scan-status {
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #15803d;
+    background: #f0fdf4;
+    border-radius: 10px;
+    margin: 0 20px;
+    display: none;
+  }
+
+  /* 체크인 입력 화면 */
+  .checkin-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    background: #f5f5f7;
+  }
+
+  .checkin-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background: #1a1a2e;
+    color: #fff;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  .checkin-body {
+    width: 100%;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    padding: 32px 24px 48px;
+    flex: 1;
+    text-align: center;
+    margin-top: -1px;
+  }
+
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0fdf4;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .dot-green {
+    width: 7px; height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+  }
+
+  .input-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 16px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+    text-align: center;
+  }
+
+  input[type="text"]:focus { border-color: #c8e435; }
+  input[type="text"]::placeholder { color: #d1d5db; }
+
+  .section-gap { margin-top: 24px; }
+
+  .pace-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 12px;
+  }
+
+  .pace-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .pace-btn {
+    padding: 10px 6px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .pace-btn.selected {
+    background: #c8e435;
+    border-color: #c8e435;
+    color: #1a1a2e;
+    font-weight: 700;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .msg {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .msg.error { background: #fef2f2; color: #b91c1c; display: block; }
+
+  /* 성공 화면 */
+  .success-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    background: #fff;
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .check-circle {
+    width: 80px; height: 80px;
+    background: #dcfce7;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+  }
+
+  .success-screen h2 { font-size: 24px; color: #111827; margin-bottom: 8px; }
+  .success-screen p { font-size: 14px; color: #6b7280; }
+
+  .success-pace {
+    display: inline-block;
+    margin-top: 16px;
+    background: #c8e435;
+    color: #1a1a2e;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+  }
+
+  .home-btn {
+    margin-top: 32px;
+    padding: 14px 32px;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <img src="NDRC_Color_1.png" alt="NDRC 로고">
+<!-- 홈 화면 -->
+<div id="home-screen" style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:480px; min-height:100vh;">
+  <div class="hero" style="width:100%;">
+    <img src="NDRC_Color_1.png" alt="NDRC 로고">
+  </div>
+  <div class="card">
+    <div class="crew-name">노들러닝크루, NDRC</div>
+    <div class="crew-since">Since 2022.06.02</div>
+
+    <div class="menu-btn" onclick="startScan()">
+      <div class="menu-icon green">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round">
+          <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
+          <path d="M7 20l3-8 2 3 3-5 3 10"/>
+        </svg>
+      </div>
+      <div class="menu-text">
+        <div class="menu-title">출석체크</div>
+        <div class="menu-sub">QR코드를 스캔해주세요</div>
+      </div>
+      <div class="menu-arrow">›</div>
+    </div>
+
+    <a class="menu-btn" href="notice.html">
+      <div class="menu-icon dark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8e435" stroke-width="2.5" stroke-linecap="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </div>
+      <div class="menu-text">
+        <div class="menu-title">공지사항</div>
+        <div class="menu-sub">NDRC 소식을 확인하세요</div>
+      </div>
+      <div class="menu-arrow">›</div>
+    </a>
+  </div>
 </div>
 
-<div class="card">
-  <div class="crew-name">노들러닝크루, NDRC</div>
-  <div class="crew-since">Since 2022.06.02</div>
-
-  <a class="menu-btn" href="checkin.html?token=TOKEN_PLACEHOLDER" id="checkin-link">
-    <div class="menu-icon green">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round">
-        <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
-        <path d="M7 20l3-8 2 3 3-5 3 10"/>
-      </svg>
+<!-- QR 스캔 화면 -->
+<div class="scan-screen" id="scan-screen">
+  <div class="scan-header">
+    <button class="back-btn" onclick="goHome()">‹</button>
+    <div class="scan-title">QR코드 스캔</div>
+  </div>
+  <div class="scan-area">
+    <video id="qr-video" playsinline autoplay muted></video>
+    <div class="scan-overlay">
+      <div class="scan-frame"></div>
     </div>
-    <div class="menu-text">
-      <div class="menu-title">출석체크</div>
-      <div class="menu-sub">매주 목요일 저녁 러닝</div>
-    </div>
-    <div class="menu-arrow">›</div>
-  </a>
-
-  <a class="menu-btn" href="notice.html">
-    <div class="menu-icon dark">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8e435" stroke-width="2.5" stroke-linecap="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-      </svg>
-    </div>
-    <div class="menu-text">
-      <div class="menu-title">공지사항</div>
-      <div class="menu-sub">NDRC 소식을 확인하세요</div>
-    </div>
-    <div class="menu-arrow">›</div>
-  </a>
+  </div>
+  <div class="scan-hint">운영진이 보여주는 QR코드를<br>화면 안에 맞춰주세요</div>
+  <div class="scan-status" id="scan-status">QR코드 인식 중...</div>
+  <canvas id="qr-canvas" style="display:none;"></canvas>
 </div>
 
+<!-- 체크인 입력 화면 -->
+<div class="checkin-screen" id="checkin-screen">
+  <div class="checkin-header">
+    <button class="back-btn" onclick="goScan()">‹</button>
+    <div class="scan-title">출석체크</div>
+  </div>
+  <div class="checkin-body">
+    <div class="verified-badge">
+      <div class="dot-green"></div>
+      <span id="verified-date">QR 인증 완료</span>
+    </div>
+
+    <label class="input-label">이름을 입력해주세요</label>
+    <input type="text" id="name-input" placeholder="홍길동" autocomplete="off" autocorrect="off">
+
+    <div class="section-gap">
+      <label class="pace-label">원하는 페이스를 선택해주세요</label>
+      <div class="pace-grid" id="pace-grid"></div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="doCheckin()">출석 완료</button>
+    <div class="msg" id="msg-box"></div>
+  </div>
+</div>
+
+<!-- 성공 화면 -->
+<div class="success-screen" id="success-screen">
+  <div class="check-circle">&#10003;</div>
+  <h2 id="success-name">출석 완료!</h2>
+  <p>오늘도 함께 달려요!</p>
+  <div class="success-pace" id="success-pace"></div>
+  <button class="home-btn" onclick="goHome()">홈으로</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <script>
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQc5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
+var scannedToken = "";
+var selectedPace = "";
+var memberList = [];
+var videoStream = null;
+var scanInterval = null;
 
-function getWeekToken() {
-  var now = new Date();
-  var day = now.getDay();
-  var diff = (day >= 4) ? day - 4 : day + 3;
-  var thursday = new Date(now);
-  thursday.setDate(now.getDate() - diff);
-  var y = thursday.getFullYear();
-  var m = String(thursday.getMonth() + 1).padStart(2, "0");
-  var d = String(thursday.getDate()).padStart(2, "0");
-  return "RUN-" + y + m + d;
+// 멤버 목록 미리 로드
+fetch(SCRIPT_URL + "?action=getMembers")
+  .then(function(r) { return r.json(); })
+  .then(function(d) { memberList = d.members || []; })
+  .catch(function() {});
+
+// 페이스 버튼 생성
+var paces = ["4:30/km","5:00/km","5:30/km","6:00/km","6:30/km","7:00/km"];
+var grid = document.getElementById("pace-grid");
+paces.forEach(function(pace) {
+  var btn = document.createElement("button");
+  btn.className = "pace-btn";
+  btn.textContent = pace;
+  btn.onclick = function() {
+    document.querySelectorAll(".pace-btn").forEach(function(b) { b.classList.remove("selected"); });
+    btn.classList.add("selected");
+    selectedPace = pace;
+  };
+  grid.appendChild(btn);
+});
+
+function showScreen(id) {
+  ["home-screen","scan-screen","checkin-screen","success-screen"].forEach(function(s) {
+    document.getElementById(s).style.display = "none";
+  });
+  document.getElementById(id).style.display = "flex";
 }
 
-var token = getWeekToken();
-document.getElementById("checkin-link").href = "checkin.html?token=" + token;
+function goHome() {
+  stopScan();
+  selectedPace = "";
+  scannedToken = "";
+  document.querySelectorAll(".pace-btn").forEach(function(b) { b.classList.remove("selected"); });
+  document.getElementById("name-input").value = "";
+  document.getElementById("msg-box").className = "msg";
+  showScreen("home-screen");
+}
+
+function goScan() {
+  showScreen("scan-screen");
+  startCamera();
+}
+
+function startScan() {
+  showScreen("scan-screen");
+  startCamera();
+}
+
+function startCamera() {
+  if (videoStream) return;
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(function(stream) {
+      videoStream = stream;
+      var video = document.getElementById("qr-video");
+      video.srcObject = stream;
+      video.play();
+      scanInterval = setInterval(scanQR, 300);
+    })
+    .catch(function() {
+      document.getElementById("scan-status").textContent = "카메라 접근 권한이 필요합니다.";
+      document.getElementById("scan-status").style.display = "block";
+    });
+}
+
+function stopScan() {
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  if (videoStream) {
+    videoStream.getTracks().forEach(function(t) { t.stop(); });
+    videoStream = null;
+  }
+}
+
+function scanQR() {
+  var video = document.getElementById("qr-video");
+  if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+
+  var canvas = document.getElementById("qr-canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  var ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  var code = jsQR(imageData.data, imageData.width, imageData.height);
+
+  if (code && code.data) {
+    var qrData = code.data;
+    // RUN-YYYYMMDD 형식 토큰 인식
+    var tokenMatch = qrData.match(/RUN-\d{8}/);
+    if (tokenMatch) {
+      scannedToken = tokenMatch[0];
+      stopScan();
+
+      // 날짜 표시
+      var year = scannedToken.substring(4, 8);
+      var month = scannedToken.substring(8, 10);
+      var day = scannedToken.substring(10, 12);
+      document.getElementById("verified-date").textContent = year + "년 " + month + "월 " + day + "일 QR 인증 완료";
+
+      showScreen("checkin-screen");
+      setTimeout(function() { document.getElementById("name-input").focus(); }, 300);
+    }
+  }
+}
+
+function doCheckin() {
+  var name = document.getElementById("name-input").value.trim();
+  var btn = document.getElementById("submit-btn");
+
+  if (!name) { showMsg("이름을 입력해주세요.", "error"); return; }
+  if (!selectedPace) { showMsg("페이스를 선택해주세요.", "error"); return; }
+  if (memberList.length > 0 && !memberList.includes(name)) {
+    showMsg("미가입된 사용자입니다. 이름을 다시 확인해주세요.", "error");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "처리 중...";
+
+  var url = SCRIPT_URL + "?action=checkin&token=" + scannedToken +
+    "&name=" + encodeURIComponent(name) +
+    "&pace=" + encodeURIComponent(selectedPace);
+
+  fetch(url, { method: "GET", mode: "no-cors" })
+    .then(function() {
+      document.getElementById("success-name").textContent = name + "님, 출석 완료!";
+      document.getElementById("success-pace").textContent = "목표 페이스 " + selectedPace;
+      showScreen("success-screen");
+    })
+    .catch(function() {
+      showMsg("네트워크 오류가 발생했습니다.", "error");
+      btn.disabled = false;
+      btn.textContent = "출석 완료";
+    });
+}
+
+function showMsg(text, type) {
+  var box = document.getElementById("msg-box");
+  box.textContent = text;
+  box.className = "msg " + type;
+}
+
+document.getElementById("name-input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") doCheckin();
+});
 </script>
 </body>
 </html>
