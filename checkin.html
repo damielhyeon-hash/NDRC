@@ -25,10 +25,7 @@
     padding: 48px 24px 40px;
   }
 
-  .hero img {
-    width: 320px;
-    max-width: 450px;
-  }
+  .hero img { width: 320px; max-width: 80%; }
 
   .card {
     background: #fff;
@@ -69,7 +66,6 @@
     font-weight: 600;
     color: #111827;
     margin-bottom: 10px;
-    text-align: center;
   }
 
   input[type="text"] {
@@ -96,14 +92,12 @@
     font-weight: 600;
     color: #111827;
     margin-bottom: 12px;
-    text-align: center;
   }
 
   .pace-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    margin-bottom: 4px;
   }
 
   .pace-btn {
@@ -115,7 +109,6 @@
     font-weight: 500;
     color: #374151;
     cursor: pointer;
-    transition: all 0.15s;
     text-align: center;
   }
 
@@ -137,11 +130,10 @@
     font-weight: 600;
     cursor: pointer;
     margin-top: 20px;
-    transition: opacity 0.15s, transform 0.1s;
   }
 
-  .btn:active { opacity: 0.85; transform: scale(0.98); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:active { opacity: 0.85; }
 
   .msg {
     margin-top: 14px;
@@ -153,11 +145,10 @@
   }
 
   .msg.error { background: #fef2f2; color: #b91c1c; display: block; }
-  .msg.success { background: #f0fdf4; color: #15803d; display: block; }
 
   .success-screen {
-    text-align: center;
     display: none;
+    text-align: center;
     padding: 10px 0;
   }
 
@@ -171,7 +162,7 @@
   }
 
   .success-screen h2 { font-size: 22px; color: #111827; margin-bottom: 8px; }
-  .success-screen p { font-size: 14px; color: #6b7280; line-height: 1.6; }
+  .success-screen p { font-size: 14px; color: #6b7280; }
 
   .success-pace {
     display: inline-block;
@@ -198,8 +189,8 @@
       <span id="today-date">날짜 로딩 중...</span>
     </div>
 
-    <label class="input-label" for="name-input">이름을 입력해주세요</label>
-    <input type="text" id="name-input" placeholder="홍길동" autocomplete="off" autocorrect="off">
+    <label class="input-label">이름을 입력해주세요</label>
+    <input type="text" id="name-input" placeholder="홍길동" autocomplete="off" autocorrect="off" autocapitalize="off">
 
     <div class="section-gap">
       <label class="pace-label">원하는 페이스를 선택해주세요</label>
@@ -230,44 +221,32 @@ function init() {
     year: "numeric", month: "long", day: "numeric", weekday: "long"
   });
 
-  var paces = ["4:30/km", "5:00/km", "5:30/km", "6:00/km", "6:30/km", "7:00/km"];
+  var paces = ["4:30/km","5:00/km","5:30/km","6:00/km","6:30/km","7:00/km"];
   var grid = document.getElementById("pace-grid");
-
   paces.forEach(function(pace) {
     var btn = document.createElement("button");
     btn.className = "pace-btn";
     btn.textContent = pace;
     btn.onclick = function() {
-      var btns = document.querySelectorAll(".pace-btn");
-      btns.forEach(function(b) { b.classList.remove("selected"); });
+      document.querySelectorAll(".pace-btn").forEach(function(b) { b.classList.remove("selected"); });
       btn.classList.add("selected");
       selectedPace = pace;
     };
     grid.appendChild(btn);
   });
 
-  // 멤버 목록 미리 불러오기
   fetch(SCRIPT_URL + "?action=getMembers")
-    .then(function(res) { return res.json(); })
-    .then(function(data) { memberList = data.members || []; })
-    .catch(function() { memberList = []; });
+    .then(function(r) { return r.json(); })
+    .then(function(d) { memberList = d.members || []; })
+    .catch(function() {});
 }
 
 function doCheckin() {
   var name = document.getElementById("name-input").value.trim();
   var btn = document.getElementById("checkin-btn");
 
-  if (!name) {
-    showMsg("이름을 입력해주세요.", "error");
-    return;
-  }
-
-  if (!selectedPace) {
-    showMsg("페이스를 선택해주세요.", "error");
-    return;
-  }
-
-  // 멤버 목록에서 이름 검증
+  if (!name) { showMsg("이름을 입력해주세요.", "error"); return; }
+  if (!selectedPace) { showMsg("페이스를 선택해주세요.", "error"); return; }
   if (memberList.length > 0 && !memberList.includes(name)) {
     showMsg("미가입된 사용자입니다. 이름을 다시 확인해주세요.", "error");
     return;
@@ -276,7 +255,9 @@ function doCheckin() {
   btn.disabled = true;
   btn.textContent = "처리 중...";
 
-  var url = SCRIPT_URL + "?action=checkin&token=" + TOKEN + "&name=" + encodeURIComponent(name) + "&pace=" + encodeURIComponent(selectedPace);
+  var url = SCRIPT_URL + "?action=checkin&token=" + TOKEN +
+    "&name=" + encodeURIComponent(name) +
+    "&pace=" + encodeURIComponent(selectedPace);
 
   fetch(url, { method: "GET", mode: "no-cors" })
     .then(function() {
@@ -286,7 +267,7 @@ function doCheckin() {
       document.getElementById("success-pace").textContent = "목표 페이스 " + selectedPace;
     })
     .catch(function() {
-      showMsg("네트워크 오류가 발생했습니다. 다시 시도해주세요.", "error");
+      showMsg("네트워크 오류가 발생했습니다.", "error");
       btn.disabled = false;
       btn.textContent = "출석 완료";
     });

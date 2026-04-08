@@ -24,14 +24,6 @@
   }
 
   .topbar-left { display: flex; align-items: center; gap: 10px; }
-
-  .topbar-icon {
-    width: 32px; height: 32px;
-    background: rgba(255,255,255,0.12);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
   .topbar-title { font-size: 16px; font-weight: 600; }
   .topbar-sub { font-size: 12px; opacity: 0.6; margin-top: 2px; }
 
@@ -57,13 +49,7 @@
     margin-bottom: 14px;
   }
 
-  .stat {
-    background: #fff;
-    border-radius: 14px;
-    padding: 14px 12px;
-    border: 1px solid #f3f4f6;
-  }
-
+  .stat { background: #fff; border-radius: 14px; padding: 14px 12px; border: 1px solid #f3f4f6; }
   .stat-label { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
   .stat-val { font-size: 26px; font-weight: 700; color: #111827; }
   .stat-val.blue { color: #2563eb; }
@@ -89,14 +75,10 @@
   .section-title { font-size: 13px; font-weight: 600; color: #374151; }
 
   .export-btn {
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: none;
-    background: #1a1a2e;
-    cursor: pointer;
-    color: #fff;
-    font-weight: 500;
+    font-size: 12px; padding: 6px 14px;
+    border-radius: 20px; border: none;
+    background: #1a1a2e; cursor: pointer;
+    color: #fff; font-weight: 500;
   }
 
   .qr-section {
@@ -107,12 +89,7 @@
     gap: 14px;
   }
 
-  .qr-date {
-    font-size: 15px;
-    font-weight: 600;
-    color: #111827;
-    text-align: center;
-  }
+  .qr-date { font-size: 15px; font-weight: 600; color: #111827; text-align: center; }
 
   .qr-box {
     background: #fff;
@@ -124,25 +101,25 @@
     justify-content: center;
   }
 
-  .qr-hint {
-    font-size: 12px;
-    color: #6b7280;
-    text-align: center;
-    line-height: 1.6;
+  .qr-hint { font-size: 12px; color: #6b7280; text-align: center; line-height: 1.6; }
+
+  .qr-link-row { display: flex; gap: 8px; width: 100%; }
+  .qr-link-box {
+    flex: 1; background: #f3f4f6;
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 11px; color: #374151;
+    word-break: break-all; font-family: monospace;
   }
 
-  .token-badge {
-    font-size: 12px;
-    font-family: monospace;
-    background: #f3f4f6;
-    color: #374151;
-    padding: 6px 14px;
-    border-radius: 20px;
+  .copy-btn {
+    font-size: 12px; padding: 8px 14px;
+    border-radius: 8px; border: 1px solid #e5e7eb;
+    background: #fff; cursor: pointer;
+    color: #374151; white-space: nowrap; font-weight: 500;
   }
 
   .member-row {
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     padding: 11px 16px;
     border-bottom: 1px solid #f9fafb;
     gap: 10px;
@@ -153,16 +130,13 @@
   .avatar {
     width: 32px; height: 32px;
     border-radius: 50%;
-    background: #dbeafe;
-    color: #1e40af;
-    font-size: 11px;
-    font-weight: 600;
+    background: #dbeafe; color: #1e40af;
+    font-size: 11px; font-weight: 600;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
 
   .avatar.absent { background: #f3f4f6; color: #9ca3af; }
-
   .member-name { font-size: 14px; color: #111827; flex: 1; }
   .member-time { font-size: 12px; color: #6b7280; }
 
@@ -171,20 +145,15 @@
   .badge-no { background: #f3f4f6; color: #6b7280; }
 
   .pace-badge {
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 20px;
-    font-weight: 600;
-    background: #c8e435;
-    color: #1a1a2e;
+    font-size: 11px; padding: 3px 9px;
+    border-radius: 20px; font-weight: 600;
+    background: #c8e435; color: #1a1a2e;
   }
 
   .history-row {
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     padding: 11px 16px;
-    border-bottom: 1px solid #f9fafb;
-    gap: 10px;
+    border-bottom: 1px solid #f9fafb; gap: 10px;
   }
 
   .history-row:last-child { border-bottom: none; }
@@ -201,7 +170,6 @@
   }
 
   .loading { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
-
   .tab-row { display: flex; gap: 6px; }
   .tab {
     font-size: 12px; padding: 5px 14px;
@@ -215,12 +183,6 @@
 
 <div class="topbar">
   <div class="topbar-left">
-    <div class="topbar-icon">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
-        <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
-        <path d="M7 20l3-8 2 3 3-5 3 10"/>
-      </svg>
-    </div>
     <div>
       <div class="topbar-title">노들러닝크루</div>
       <div class="topbar-sub">운영자 대시보드</div>
@@ -250,8 +212,11 @@
       <div class="qr-box">
         <div id="qr-canvas"></div>
       </div>
-      <div class="qr-hint">참가자가 앱에서 출석체크 버튼을 누르고<br>이 QR코드를 스캔하면 출석이 완료됩니다</div>
-      <div class="token-badge" id="token-badge">-</div>
+      <div class="qr-hint">참가자가 기본 카메라 앱으로 QR을 스캔하면<br>바로 출석체크 페이지로 연결됩니다</div>
+      <div class="qr-link-row">
+        <div class="qr-link-box" id="qr-link">링크 로딩 중...</div>
+        <button class="copy-btn" onclick="copyLink()">복사</button>
+      </div>
     </div>
   </div>
 
@@ -284,6 +249,7 @@
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
 var allData = null;
+var checkinUrl = "";
 var qrGenerated = false;
 
 function getWeekToken() {
@@ -300,11 +266,13 @@ function getWeekToken() {
 
 function generateQR() {
   var token = getWeekToken();
-  document.getElementById("token-badge").textContent = token;
+  var baseUrl = location.href.replace("dashboard.html", "checkin.html");
+  checkinUrl = baseUrl + "?token=" + token;
+  document.getElementById("qr-link").textContent = checkinUrl;
 
   if (!qrGenerated) {
     new QRCode(document.getElementById("qr-canvas"), {
-      text: token,
+      text: checkinUrl,
       width: 200,
       height: 200,
       colorDark: "#1a1a2e",
@@ -393,6 +361,14 @@ function switchTab(tab, el) {
   document.getElementById("list-today").style.display = tab === "today" ? "block" : "none";
   document.getElementById("list-history").style.display = tab === "history" ? "block" : "none";
   document.getElementById("list-title").textContent = tab === "today" ? "오늘 출석 현황" : "누적 출석 순위";
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(checkinUrl).then(function() {
+    var btn = event.target;
+    btn.textContent = "완료!";
+    setTimeout(function() { btn.textContent = "복사"; }, 2000);
+  });
 }
 
 function exportCSV() {
