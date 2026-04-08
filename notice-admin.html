@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공지사항 관리 - NDRC</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: #f5f5f7;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .topbar-title { font-size: 16px; font-weight: 600; }
+  .topbar-sub { font-size: 12px; opacity: 0.6; }
+
+  .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+  .login-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f3f4f6;
+    padding: 32px 24px;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .login-title { font-size: 16px; font-weight: 600; color: #111827; margin-bottom: 16px; }
+
+  .section {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f3f4f6;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .section-header {
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .section-body { padding: 16px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  label:first-child { margin-top: 0; }
+
+  input[type="text"],
+  input[type="password"],
+  textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.15s;
+    font-family: inherit;
+    -webkit-appearance: none;
+  }
+
+  input:focus, textarea:focus { border-color: #c8e435; }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+  }
+
+  .image-hint {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: opacity 0.15s;
+  }
+
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:active { opacity: 0.85; }
+
+  .btn-danger {
+    background: #ef4444;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 0;
+    width: auto;
+  }
+
+  .msg {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .msg.success { background: #f0fdf4; color: #15803d; display: block; }
+  .msg.error { background: #fef2f2; color: #b91c1c; display: block; }
+
+  .notice-row {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f9fafb;
+  }
+
+  .notice-row:last-child { border-bottom: none; }
+
+  .notice-row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .notice-row-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    flex: 1;
+  }
+
+  .notice-row-date {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  .notice-row-preview {
+    font-size: 13px;
+    color: #6b7280;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .empty { padding: 24px; text-align: center; color: #9ca3af; font-size: 14px; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">공지사항 관리</div>
+    <div class="topbar-sub">노들러닝크루 운영진</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 로그인 화면 -->
+  <div id="login-screen" class="login-card">
+    <div class="login-title">운영진 비밀번호를 입력해주세요</div>
+    <input type="password" id="password-input" placeholder="비밀번호">
+    <button class="btn" onclick="doLogin()">로그인</button>
+    <div class="msg" id="login-msg"></div>
+  </div>
+
+  <!-- 관리 화면 -->
+  <div id="admin-screen" class="hidden">
+
+    <!-- 공지 작성 -->
+    <div class="section">
+      <div class="section-header">새 공지사항 작성</div>
+      <div class="section-body">
+        <label>제목</label>
+        <input type="text" id="notice-title" placeholder="공지 제목을 입력해주세요">
+
+        <label>내용</label>
+        <textarea id="notice-content" placeholder="공지 내용을 입력해주세요"></textarea>
+
+        <label>이미지 URL (선택)</label>
+        <input type="text" id="notice-image" placeholder="https://...">
+        <div class="image-hint">이미지는 구글 드라이브에 업로드 후 공유 링크를 붙여넣으세요.<br>공유 설정을 '링크가 있는 모든 사용자'로 변경해주세요.</div>
+
+        <button class="btn" id="submit-btn" onclick="submitNotice()">공지 등록</button>
+        <div class="msg" id="submit-msg"></div>
+      </div>
+    </div>
+
+    <!-- 공지 목록 -->
+    <div class="section">
+      <div class="section-header">등록된 공지사항</div>
+      <div id="notice-list"><div class="empty">공지사항을 불러오는 중...</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-wNAgk-re1cXUA3bZTQC5hTCT2u9oE7vnLBGjtDMbcD63Z40hndTjUQhHNcznmFwd/exec";
+var ADMIN_PW = "";
+
+function doLogin() {
+  var pw = document.getElementById("password-input").value;
+  if (pw === "admin0602") {
+    ADMIN_PW = pw;
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("admin-screen").classList.remove("hidden");
+    loadNotices();
+  } else {
+    var msg = document.getElementById("login-msg");
+    msg.textContent = "비밀번호가 틀렸습니다.";
+    msg.className = "msg error";
+  }
+}
+
+document.getElementById("password-input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") doLogin();
+});
+
+function loadNotices() {
+  fetch(SCRIPT_URL + "?action=getNotices")
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var notices = data.notices || [];
+      var list = document.getElementById("notice-list");
+
+      if (notices.length === 0) {
+        list.innerHTML = '<div class="empty">등록된 공지사항이 없습니다.</div>';
+        return;
+      }
+
+      list.innerHTML = "";
+      notices.forEach(function(notice) {
+        var row = document.createElement("div");
+        row.className = "notice-row";
+        row.innerHTML =
+          '<div class="notice-row-top">' +
+            '<div class="notice-row-title">' + notice.title + '</div>' +
+            '<button class="btn-danger" onclick="deleteNotice(\'' + notice.id + '\')">삭제</button>' +
+          '</div>' +
+          '<div class="notice-row-date">' + notice.date + '</div>' +
+          '<div class="notice-row-preview">' + notice.content.substring(0, 50) + (notice.content.length > 50 ? "..." : "") + '</div>';
+        list.appendChild(row);
+      });
+    })
+    .catch(function() {
+      document.getElementById("notice-list").innerHTML = '<div class="empty">불러오기 실패</div>';
+    });
+}
+
+function submitNotice() {
+  var title = document.getElementById("notice-title").value.trim();
+  var content = document.getElementById("notice-content").value.trim();
+  var imageUrl = document.getElementById("notice-image").value.trim();
+  var btn = document.getElementById("submit-btn");
+  var msg = document.getElementById("submit-msg");
+
+  if (!title || !content) {
+    msg.textContent = "제목과 내용을 입력해주세요.";
+    msg.className = "msg error";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "등록 중...";
+
+  var url = SCRIPT_URL + "?action=addNotice&password=" + encodeURIComponent(ADMIN_PW) +
+    "&title=" + encodeURIComponent(title) +
+    "&content=" + encodeURIComponent(content) +
+    "&imageUrl=" + encodeURIComponent(imageUrl);
+
+  fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success) {
+        msg.textContent = "공지사항이 등록되었습니다!";
+        msg.className = "msg success";
+        document.getElementById("notice-title").value = "";
+        document.getElementById("notice-content").value = "";
+        document.getElementById("notice-image").value = "";
+        loadNotices();
+      } else {
+        msg.textContent = data.message || "오류가 발생했습니다.";
+        msg.className = "msg error";
+      }
+      btn.disabled = false;
+      btn.textContent = "공지 등록";
+    })
+    .catch(function() {
+      msg.textContent = "네트워크 오류가 발생했습니다.";
+      msg.className = "msg error";
+      btn.disabled = false;
+      btn.textContent = "공지 등록";
+    });
+}
+
+function deleteNotice(id) {
+  if (!confirm("이 공지사항을 삭제할까요?")) return;
+
+  var url = SCRIPT_URL + "?action=deleteNotice&password=" + encodeURIComponent(ADMIN_PW) + "&id=" + id;
+
+  fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success) loadNotices();
+      else alert(data.message);
+    });
+}
+</script>
+</body>
+</html>
